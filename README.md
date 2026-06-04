@@ -1,1 +1,402 @@
-# Plan
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IronForge Gym — Современный стиль</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #0a0a0f;
+            color: #e0e0e0;
+            min-height: 100vh;
+        }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        @keyframes glow { 0%,100% { box-shadow: 0 0 5px rgba(255,107,43,0.5); } 50% { box-shadow: 0 0 20px rgba(255,107,43,0.8); } }
+        @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+        @keyframes borderGlow { 0%,100% { border-color: #ff6b2b; } 50% { border-color: #ff8c42; } }
+
+        .app { max-width: 1000px; margin: 0 auto; padding: 20px; }
+        header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 20px 30px;
+            background: rgba(20,20,30,0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            margin-bottom: 30px;
+            animation: fadeInUp 0.6s ease;
+        }
+        .logo {
+            font-size: 2.2rem; font-weight: 800;
+            background: linear-gradient(135deg, #ff6b2b, #ff8c42, #ff6b2b);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: shimmer 3s ease infinite;
+        }
+        .avatar {
+            width: 45px; height: 45px; border-radius: 50%;
+            background: linear-gradient(135deg, #ff6b2b, #ff8c42);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold; color: #121212; font-size: 1.1rem;
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        .folders {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px;
+        }
+        .folder {
+            background: rgba(20,20,30,0.6);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px;
+            padding: 25px 15px; text-align: center; cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: fadeInUp 0.5s ease backwards;
+            position: relative; overflow: hidden;
+        }
+        .folder:nth-child(1){animation-delay:0.03s} .folder:nth-child(2){animation-delay:0.06s}
+        .folder:nth-child(3){animation-delay:0.09s} .folder:nth-child(4){animation-delay:0.12s}
+        .folder:nth-child(5){animation-delay:0.15s} .folder:nth-child(6){animation-delay:0.18s}
+        .folder:nth-child(7){animation-delay:0.21s} .folder:nth-child(8){animation-delay:0.24s}
+        .folder:nth-child(9){animation-delay:0.27s} .folder:nth-child(10){animation-delay:0.30s}
+        .folder:nth-child(11){animation-delay:0.33s} .folder:nth-child(12){animation-delay:0.36s}
+        .folder::before {
+            content: ''; position: absolute; top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(255,107,43,0.1) 0%, transparent 70%);
+            opacity: 0; transition: opacity 0.3s;
+        }
+        .folder:hover::before { opacity: 1; }
+        .folder:hover {
+            border-color: #ff6b2b;
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.4), 0 0 20px rgba(255,107,43,0.2);
+        }
+        .folder:active { transform: scale(0.97); }
+        .folder-icon { font-size: 2.5rem; margin-bottom: 8px; position: relative; z-index: 1; transition: 0.3s; }
+        .folder:hover .folder-icon { transform: scale(1.2); }
+        .folder-title { font-weight: 600; font-size: 0.9rem; position: relative; z-index: 1; }
+
+        .section { display: none; animation: fadeInUp 0.4s ease; }
+        .section.active { display: block; }
+        .back-btn {
+            background: linear-gradient(135deg, #ff6b2b, #ff8c42);
+            color: #121212; border: none;
+            padding: 12px 24px; border-radius: 30px;
+            cursor: pointer; margin-bottom: 20px;
+            font-weight: 600; font-size: 0.95rem;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(255,107,43,0.3);
+        }
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255,107,43,0.5);
+        }
+
+        .card {
+            background: rgba(20,20,30,0.6);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px;
+            padding: 25px; margin-bottom: 20px;
+            animation: fadeInUp 0.5s ease;
+            transition: all 0.3s;
+        }
+        .card:hover { border-color: rgba(255,107,43,0.3); }
+        h2 {
+            font-size: 1.5rem; font-weight: 700;
+            background: linear-gradient(135deg, #ff6b2b, #ff8c42);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+        }
+        h3 { color: #ff8c42; margin: 12px 0; font-size: 1.1rem; }
+        input, select, textarea {
+            width: 100%; padding: 14px 16px; margin: 8px 0;
+            background: rgba(10,10,20,0.6);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 14px; color: white;
+            font-size: 0.95rem; transition: all 0.3s;
+        }
+        input:focus, select:focus, textarea:focus {
+            border-color: #ff6b2b; outline: none;
+            box-shadow: 0 0 0 3px rgba(255,107,43,0.15);
+        }
+        button {
+            background: linear-gradient(135deg, #ff6b2b, #ff8c42);
+            color: #121212; border: none;
+            padding: 14px 28px; border-radius: 30px;
+            cursor: pointer; font-weight: 600;
+            font-size: 0.95rem; margin: 4px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(255,107,43,0.3);
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255,107,43,0.5);
+        }
+        button:active { transform: scale(0.96); }
+
+        .exercise {
+            background: rgba(30,30,40,0.6);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px; padding: 18px;
+            margin: 10px 0; border-left: 4px solid #ff6b2b;
+            transition: all 0.3s;
+        }
+        .exercise:hover { background: rgba(40,40,50,0.6); }
+        .exercise.open .exercise-details { display: block; animation: fadeInUp 0.3s ease; }
+        .exercise-header { display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        .exercise-details { display: none; margin-top: 12px; }
+        .timer-display { font-weight: bold; color: #ff6b2b; }
+
+        .chat-box { display: flex; flex-direction: column; gap: 8px; max-height: 300px; overflow-y: auto; margin-bottom: 10px; }
+        .msg {
+            background: rgba(30,30,40,0.6); padding: 12px 16px;
+            border-radius: 16px; max-width: 80%; animation: fadeInUp 0.2s ease;
+        }
+        .msg.user {
+            background: linear-gradient(135deg, #ff6b2b, #ff8c42);
+            color: #121212; align-self: flex-end; margin-left: auto;
+        }
+
+        .food-item {
+            background: rgba(30,30,40,0.6); padding: 12px 16px;
+            margin: 6px 0; border-radius: 12px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .add-form {
+            background: rgba(10,10,20,0.6);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px; padding: 20px; margin: 20px 0;
+        }
+        .calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; text-align: center; }
+        .calendar div {
+            padding: 12px; background: rgba(30,30,40,0.6);
+            border-radius: 12px; cursor: pointer; transition: 0.2s;
+        }
+        .calendar div:hover { background: rgba(255,107,43,0.2); }
+        .calendar div.trained { background: linear-gradient(135deg, #ff6b2b, #ff8c42); color: #121212; font-weight: bold; }
+        .calendar div.today { border: 2px solid #ff6b2b; }
+
+        @media (max-width: 700px) { .folders { grid-template-columns: repeat(2, 1fr); } }
+    </style>
+</head>
+<body>
+<div class="app" id="app">
+    <header>
+        <div class="logo">IRONFORGE</div>
+        <div class="avatar" id="userLevel">1</div>
+    </header>
+    <div id="home" class="section active">
+        <div class="folders" id="folders"></div>
+    </div>
+</div>
+
+<script>
+    var activeTimer = null;
+    var workoutStopwatch = { running: false, seconds: 0, interval: null };
+    var trainingHistory = JSON.parse(localStorage.getItem('trainingHistory') || '{}');
+    var calendarMarks = JSON.parse(localStorage.getItem('calendarMarks') || '{}');
+    var foodLog = JSON.parse(localStorage.getItem('foodLog') || '[]');
+    var customExercises = JSON.parse(localStorage.getItem('customExercises') || '{}');
+    var progressData = JSON.parse(localStorage.getItem('progress') || '{"weight":[]}');
+    var userWeight = parseFloat(localStorage.getItem('userWeight')) || 70;
+    var achievements = JSON.parse(localStorage.getItem('achievements') || '{"firstWorkout":false}');
+    var customMenu = JSON.parse(localStorage.getItem('customMenu') || '[]');
+    var workoutCount = Object.keys(trainingHistory).filter(function(d) { return trainingHistory[d] && trainingHistory[d].length > 0; }).length;
+
+    var basePlan = {
+        'Понедельник': [
+            { name: 'Жим штанги лежа', muscle: 'грудь, трицепс', sets: '4x6-8', technique: 'Лягте на скамью, хват шире плеч, опустите штангу к нижней части груди, мощно выжмите вверх.' },
+            { name: 'Подтягивания / тяга верхнего блока', muscle: 'спина, бицепс', sets: '4x8-10', technique: 'Широкий хват, тянитесь грудью к перекладине.' },
+            { name: 'Армейский жим стоя', muscle: 'плечи, трицепс', sets: '3x8-10', technique: 'Выжимайте над головой, не прогибайте спину.' },
+            { name: 'Тяга штанги в наклоне', muscle: 'спина, бицепс', sets: '3x8-10', technique: 'Наклон 45°, тяните к поясу.' },
+            { name: 'Подъем штанги на бицепс', muscle: 'бицепс', sets: '3x10-12', technique: 'Без рывков, хват на ширине плеч.' },
+            { name: 'Французский жим', muscle: 'трицепс', sets: '3x10-12', technique: 'Опускайте за голову, разгибайте.' }
+        ],
+        'Среда': [
+            { name: 'Приседания со штангой', muscle: 'квадрицепсы, ягодицы', sets: '4x6-8', technique: 'Спина прямая, до параллели.' },
+            { name: 'Румынская становая тяга', muscle: 'бицепс бедра, поясница', sets: '4x8-10', technique: 'Ноги чуть согнуты, спина прямая.' },
+            { name: 'Жим ногами', muscle: 'общая масса ног', sets: '3x10-12', technique: 'Без полного выпрямления коленей.' },
+            { name: 'Подъем на носки стоя', muscle: 'икры', sets: '4x12-15', technique: 'Максимальная амплитуда.' },
+            { name: 'Скручивания на пресс', muscle: 'верх пресса', sets: '3x15-20', technique: 'Скручивайтесь к коленям.' },
+            { name: 'Подъем ног в висе', muscle: 'нижний пресс', sets: '3x до отказа', technique: 'Прямые ноги до горизонтали.' }
+        ],
+        'Пятница': [
+            { name: 'Жим гантелей на наклонной', muscle: 'верх груди', sets: '4x10-12', technique: 'Скамья 30-45°.' },
+            { name: 'Тяга гантели к поясу', muscle: 'спина, бицепс', sets: '4x10-12', technique: 'С опорой, локоть вверх.' },
+            { name: 'Разведения гантелей', muscle: 'средняя дельта', sets: '4x12-15', technique: 'До уровня плеч.' },
+            { name: 'Сведения в тренажере', muscle: 'изоляция груди', sets: '3x12-15', technique: 'Задержитесь в пике.' },
+            { name: 'Молотковые сгибания', muscle: 'брахиалис, бицепс', sets: '3x10-12', technique: 'Нейтральный хват.' },
+            { name: 'Разгибания на блоке', muscle: 'трицепс', sets: '3x12-15', technique: 'До полного сокращения.' }
+        ],
+        'Суббота': [
+            { name: 'Гакк-приседания / выпады', muscle: 'квадрицепсы', sets: '4x10-12', technique: 'Корпус прямо.' },
+            { name: 'Сгибания ног лёжа', muscle: 'бицепс бедра', sets: '4x12-15', technique: 'К ягодицам.' },
+            { name: 'Разгибания ног сидя', muscle: 'квадрицепс', sets: '3x12-15', technique: 'Полное выпрямление.' },
+            { name: 'Подъем на носки сидя', muscle: 'камбаловидная', sets: '4x15', technique: 'Максимально высоко.' },
+            { name: 'Планка с утяжелением', muscle: 'кор, пресс', sets: '3x1 мин', technique: 'Тело прямое.' },
+            { name: 'Косые скручивания', muscle: 'косые мышцы', sets: '3x20', technique: 'Локоть к колену.' }
+        ]
+    };
+
+    function getFullPlan() {
+        var plan = {};
+        var days = Object.keys(basePlan);
+        for (var i = 0; i < days.length; i++) {
+            plan[days[i]] = basePlan[days[i]].slice();
+            if (customExercises[days[i]]) plan[days[i]] = plan[days[i]].concat(customExercises[days[i]]);
+        }
+        return plan;
+    }
+
+    var sectionList = [
+        { id: 'training', icon: '🏋️', title: 'Тренировки' },
+        { id: 'nutrition', icon: '🍽️', title: 'Питание' },
+        { id: 'ai-coach', icon: '🧠', title: 'ИИ-тренер' },
+        { id: 'progress', icon: '📈', title: 'Прогресс' },
+        { id: 'calendar', icon: '📅', title: 'Календарь' },
+        { id: 'achievements', icon: '🏆', title: 'Ачивки' },
+        { id: 'menu', icon: '🥗', title: 'Моё меню' },
+        { id: 'calculators', icon: '🧮', title: 'Калькуляторы' },
+        { id: 'program-builder', icon: '🎯', title: 'Программы' },
+        { id: 'wellness', icon: '💧', title: 'Вода' },
+        { id: 'membership', icon: '📋', title: 'Абонемент' },
+        { id: 'settings', icon: '⚙️', title: 'Настройки' }
+    ];
+
+    function renderFolders() {
+        var html = '';
+        for (var i = 0; i < sectionList.length; i++) {
+            var s = sectionList[i];
+            html += '<div class="folder" onclick="showSection(\'' + s.id + '\')"><div class="folder-icon">' + s.icon + '</div><div class="folder-title">' + s.title + '</div></div>';
+        }
+        document.getElementById('folders').innerHTML = html;
+    }
+
+    function showSection(id) {
+        var all = document.querySelectorAll('.section');
+        for (var i = 0; i < all.length; i++) all[i].classList.remove('active');
+        var el = document.getElementById(id);
+        if (!el) { el = document.createElement('div'); el.id = id; el.className = 'section active'; document.getElementById('app').appendChild(el); }
+        else el.classList.add('active');
+        if (id !== 'home') el.innerHTML = '<button class="back-btn" onclick="showSection(\'home\')">← На главную</button>' + getSectionHTML(id);
+        if (id === 'nutrition') renderFoodList();
+        if (id === 'ai-coach') setupChat();
+        if (id === 'progress') setTimeout(drawChart, 100);
+        if (id === 'menu') renderMenuList();
+    }
+
+    function getSectionHTML(id) {
+        if (id === 'training') return getTrainingHTML();
+        if (id === 'nutrition') return '<div class="card"><h2>🍽️ Дневник питания</h2><div id="foodList"></div><div class="add-form"><h3>➕ Добавить продукт</h3><input id="foodName" placeholder="Название"><input id="foodCals" placeholder="Ккал" type="number"><input id="foodProtein" placeholder="Белки (г)" type="number"><input id="foodFat" placeholder="Жиры (г)" type="number"><input id="foodCarbs" placeholder="Углеводы (г)" type="number"><button onclick="addFood()">Добавить</button></div></div>';
+        if (id === 'ai-coach') return '<div class="card"><h2>🧠 ИИ-тренер</h2><div class="chat-box" id="chatBox"></div><textarea id="aiInput" placeholder="Спроси о тренировках, питании..."></textarea><button onclick="sendAI()">Отправить</button></div>';
+        if (id === 'progress') return '<div class="card"><h2>📈 Прогресс</h2><p>Вес: <input id="bodyWeight" type="number" value="' + userWeight + '"> кг <button onclick="logWeight()">Записать</button></p><canvas id="weightCanvas" width="300" height="150" style="background:rgba(10,10,20,0.6);border-radius:12px;margin-top:10px;"></canvas></div>';
+        if (id === 'calendar') return getCalendarHTML();
+        if (id === 'achievements') return '<div class="card"><h2>🏆 Ачивки</h2><p>🥇 Первая тренировка: ' + (achievements.firstWorkout ? '✅' : '❌') + '</p><p>Всего тренировок: ' + workoutCount + '</p></div>';
+        if (id === 'menu') return '<div class="card"><h2>🥗 Моё меню</h2><div id="menuList"></div><div class="add-form"><h3>➕ Добавить блюдо</h3><input id="menuName" placeholder="Название"><input id="menuDesc" placeholder="Состав"><input id="menuCals" placeholder="Ккал" type="number"><button onclick="addMenu()">Добавить</button></div></div>';
+        if (id === 'calculators') return '<div class="card"><h2>🧮 Калькуляторы</h2><p>Вес: <input id="cw" value="70"> кг <button onclick="document.getElementById(\'cr\').textContent=\'≈ \'+Math.round(+document.getElementById(\'cw\').value*33)+\' ккал\'">Расчёт</button> <span id="cr"></span></p></div>';
+        if (id === 'program-builder') return '<div class="card"><h2>🎯 Программы</h2><select id="progLevel"><option>Новичок</option><option>Средний</option><option>Профи</option></select><select id="progDays"><option value="3">3 дня</option><option value="4">4 дня</option></select><button onclick="genProgram()">Создать</button><div id="genResult"></div></div>';
+        if (id === 'wellness') return '<div class="card"><h2>💧 Вода</h2><p>Пей 2-3 литра в день</p></div>';
+        if (id === 'membership') return '<div class="card"><h2>📋 Абонемент</h2><p>Тренировок: ' + workoutCount + '</p></div>';
+        if (id === 'settings') return '<div class="card"><h2>⚙️ Настройки</h2><button onclick="if(confirm(\'Сбросить?\')){localStorage.clear();location.reload()}">Сброс данных</button></div>';
+        return '';
+    }
+
+    function getTrainingHTML() {
+        var today = new Date().toISOString().split('T')[0];
+        var doneToday = trainingHistory[today] || [];
+        var plan = getFullPlan();
+        var h = '<div class="card"><h2>🏋️ Твой план тренировок</h2>';
+        h += '<p>⏱️ Общее время: <strong id="stopwatchDisplay">00:00</strong> <button onclick="toggleStopwatch()">Старт/Стоп</button> <button onclick="resetStopwatch()">Сброс</button></p>';
+        var days = Object.keys(plan);
+        for (var d = 0; d < days.length; d++) {
+            h += '<h3>' + days[d] + '</h3>';
+            for (var i = 0; i < plan[days[d]].length; i++) {
+                var exId = days[d] + '-' + i;
+                var checked = doneToday.indexOf(plan[days[d]][i].name) >= 0 ? 'checked' : '';
+                h += '<div class="exercise" id="ex-' + exId + '"><div class="exercise-header" onclick="document.getElementById(\'ex-' + exId + '\').classList.toggle(\'open\')"><label><input type="checkbox" ' + checked + ' onchange="markExercise(\'' + days[d] + '\',' + i + ',this.checked)" onclick="event.stopPropagation()"> ' + plan[days[d]][i].name + '</label><span>' + plan[days[d]][i].sets + '</span></div><div class="exercise-details"><p>🎯 ' + plan[days[d]][i].muscle + '</p><p>📖 ' + plan[days[d]][i].technique + '</p><p>⏱️ Таймер: <span class="timer-display" id="timer-' + exId + '">90 сек</span><button onclick="event.stopPropagation();startTimer(\'' + exId + '\',90)">▶</button><button onclick="event.stopPropagation();stopTimer(\'' + exId + '\')">⏹</button></p></div></div>';
+            }
+        }
+        h += '<div class="add-form"><h3>➕ Добавить упражнение</h3><input id="newExName" placeholder="Название"><input id="newExMuscle" placeholder="Мышцы"><input id="newExSets" placeholder="Подходы"><textarea id="newExTech" placeholder="Техника"></textarea><select id="newExDay">';
+        for (var b = 0; b < Object.keys(basePlan).length; b++) h += '<option>' + Object.keys(basePlan)[b] + '</option>';
+        h += '</select><button onclick="addCustomExercise()">Добавить</button></div></div>';
+        return h;
+    }
+
+    window.addCustomExercise = function() {
+        var name = document.getElementById('newExName').value.trim();
+        var muscle = document.getElementById('newExMuscle').value.trim();
+        var sets = document.getElementById('newExSets').value.trim();
+        var tech = document.getElementById('newExTech').value.trim();
+        var day = document.getElementById('newExDay').value;
+        if (!name || !muscle || !sets) return alert('Заполни поля!');
+        if (!customExercises[day]) customExercises[day] = [];
+        customExercises[day].push({ name: name, muscle: muscle, sets: sets, technique: tech || 'Без описания' });
+        localStorage.setItem('customExercises', JSON.stringify(customExercises));
+        showSection('training');
+    };
+    window.markExercise = function(day, idx, checked) {
+        var today = new Date().toISOString().split('T')[0];
+        if (!trainingHistory[today]) trainingHistory[today] = [];
+        var name = getFullPlan()[day][idx].name;
+        if (checked) { if (trainingHistory[today].indexOf(name) < 0) trainingHistory[today].push(name); }
+        else trainingHistory[today] = trainingHistory[today].filter(function(n) { return n !== name; });
+        localStorage.setItem('trainingHistory', JSON.stringify(trainingHistory));
+        calendarMarks[today] = trainingHistory[today].length > 0;
+        localStorage.setItem('calendarMarks', JSON.stringify(calendarMarks));
+        workoutCount = Object.keys(trainingHistory).filter(function(d) { return trainingHistory[d] && trainingHistory[d].length > 0; }).length;
+        if (workoutCount >= 1 && !achievements.firstWorkout) { achievements.firstWorkout = true; localStorage.setItem('achievements', JSON.stringify(achievements)); }
+        document.getElementById('userLevel').textContent = Math.floor(workoutCount / 5) + 1;
+    };
+
+    window.toggleStopwatch = function() {
+        if (workoutStopwatch.running) { clearInterval(workoutStopwatch.interval); workoutStopwatch.running = false; }
+        else { workoutStopwatch.running = true; workoutStopwatch.interval = setInterval(function() { workoutStopwatch.seconds++; var m = Math.floor(workoutStopwatch.seconds/60); var s = workoutStopwatch.seconds%60; var el = document.getElementById('stopwatchDisplay'); if (el) el.textContent = String(m).padStart(2,'0')+':'+String(s).padStart(2,'0'); }, 1000); }
+    };
+    window.resetStopwatch = function() { clearInterval(workoutStopwatch.interval); workoutStopwatch.running = false; workoutStopwatch.seconds = 0; var el = document.getElementById('stopwatchDisplay'); if (el) el.textContent = '00:00'; };
+    window.startTimer = function(exId, sec) { if (activeTimer) clearInterval(activeTimer.interval); var time = sec; var el = document.getElementById('timer-'+exId); if (!el) return; el.textContent = time+' сек'; activeTimer = { interval: setInterval(function() { time--; el.textContent = time+' сек'; if (time<=0) { clearInterval(activeTimer.interval); activeTimer = null; el.textContent = 'ГОТОВО!'; setTimeout(function() { el.textContent = sec+' сек'; }, 3000); } }, 1000) }; };
+    window.stopTimer = function(exId) { if (activeTimer) { clearInterval(activeTimer.interval); activeTimer = null; } var el = document.getElementById('timer-'+exId); if (el) el.textContent = '90 сек'; };
+
+    function setupChat() { var box = document.getElementById('chatBox'); if (box && box.children.length === 0) box.innerHTML = '<div class="msg">Привет! Я твой ИИ-тренер. Задай вопрос.</div>'; }
+    window.sendAI = function() { var input = document.getElementById('aiInput'); var msg = input.value.trim(); if (!msg) return; var box = document.getElementById('chatBox'); box.innerHTML += '<div class="msg user">'+msg+'</div>'; input.value = ''; box.scrollTop = box.scrollHeight; setTimeout(function() { box.innerHTML += '<div class="msg">'+generateAI(msg)+'</div>'; box.scrollTop = box.scrollHeight; }, 500); };
+    function generateAI(input) {
+        var low = input.toLowerCase();
+        if (low.indexOf('создатель') >= 0 || low.indexOf('создал') >= 0) return '👨‍💻 Мой создатель — Назаев Мохьмад-Салах.';
+        var r = [];
+        if (low.indexOf('присед') >= 0) r.push('Приседай с прямой спиной, до параллели.');
+        if (low.indexOf('жим') >= 0 && low.indexOf('лежа') >= 0) r.push('Жим лёжа: своди лопатки, касайся низа груди.');
+        if (low.indexOf('протеин') >= 0) r.push('Белка: 1.6-2.2 г/кг веса.');
+        return r.length ? r.join(' ') : 'Уточни вопрос — я помогу с техникой или питанием.';
+    }
+
+    window.addFood = function() { var n = document.getElementById('foodName').value.trim(); var cal = +document.getElementById('foodCals').value||0; var p = +document.getElementById('foodProtein').value||0; var f = +document.getElementById('foodFat').value||0; var c = +document.getElementById('foodCarbs').value||0; if(!n)return; foodLog.push({name:n,cal:cal,protein:p,fat:f,carbs:c,date:new Date().toLocaleDateString()}); localStorage.setItem('foodLog',JSON.stringify(foodLog)); renderFoodList(); };
+    function renderFoodList() { var l=document.getElementById('foodList'); if(!l)return; var today=new Date().toLocaleDateString(); var tf=foodLog.filter(function(f){return f.date===today}); var total={cal:0,p:0,f:0,c:0}; for(var i=0;i<tf.length;i++){total.cal+=tf[i].cal;total.p+=tf[i].protein;total.f+=tf[i].fat;total.c+=tf[i].carbs} var html=''; for(var i=0;i<tf.length;i++){html+='<div class="food-item"><span>'+tf[i].name+': '+tf[i].cal+' ккал (Б:'+tf[i].protein+' Ж:'+tf[i].fat+' У:'+tf[i].carbs+')</span><button onclick="removeFood('+i+')">✕</button></div>'} html+='<hr><strong>Всего: '+total.cal+' ккал | Б: '+total.p+'г | Ж: '+total.f+'г | У: '+total.c+'г</strong>'; l.innerHTML=html||'<p>Нет продуктов</p>'; }
+    window.removeFood = function(i) { foodLog.splice(i,1); localStorage.setItem('foodLog',JSON.stringify(foodLog)); renderFoodList(); };
+
+    window.logWeight = function() { userWeight = +document.getElementById('bodyWeight').value; localStorage.setItem('userWeight', userWeight); progressData.weight.push({ date: new Date().toLocaleDateString(), value: userWeight }); localStorage.setItem('progress', JSON.stringify(progressData)); drawChart(); };
+    function drawChart() { var c=document.getElementById('weightCanvas'); if(!c)return; var ctx=c.getContext('2d'); var d=progressData.weight.slice(-10); ctx.clearRect(0,0,300,150); if(d.length<2)return; var max=Math.max.apply(null,d.map(function(x){return x.value})); var min=Math.min.apply(null,d.map(function(x){return x.value})); ctx.beginPath(); ctx.strokeStyle='#ff6b2b'; for(var i=0;i<d.length;i++){var x=10+i*280/(d.length-1);var y=140-(d[i].value-min)/(max-min||1)*120;if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y)} ctx.stroke(); }
+
+    function getCalendarHTML() { var now=new Date(),y=now.getFullYear(),m=now.getMonth(),days=new Date(y,m+1,0).getDate(),first=(new Date(y,m,1).getDay()||7); var h='<div class="card"><h2>📅 Календарь</h2><div class="calendar">'; var dn=['Пн','Вт','Ср','Чт','Пт','Сб','Вс']; for(var i=0;i<7;i++)h+='<div><b>'+dn[i]+'</b></div>'; for(var i=1;i<first;i++)h+='<div></div>'; for(var d=1;d<=days;d++){var ds=y+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');var cls=calendarMarks[ds]?'trained':'';if(d===now.getDate()&&m===now.getMonth())cls+=' today';h+='<div class="'+cls+'" onclick="toggleDay(\''+ds+'\')">'+d+'</div>'} h+='</div></div>'; return h; }
+    window.toggleDay = function(ds) { calendarMarks[ds] = !calendarMarks[ds]; localStorage.setItem('calendarMarks', JSON.stringify(calendarMarks)); showSection('calendar'); };
+
+    window.addMenu = function() { var n=document.getElementById('menuName').value.trim(); var d=document.getElementById('menuDesc').value.trim(); var c=+document.getElementById('menuCals').value||0; if(!n)return; customMenu.push({name:n,desc:d,cal:c}); localStorage.setItem('customMenu',JSON.stringify(customMenu)); renderMenuList(); };
+    function renderMenuList() { var l=document.getElementById('menuList'); if(!l)return; var html=''; for(var i=0;i<customMenu.length;i++){html+='<div class="food-item"><span><b>'+customMenu[i].name+'</b>: '+customMenu[i].desc+' — '+customMenu[i].cal+' ккал</span><button onclick="removeMenu('+i+')">✕</button></div>'} l.innerHTML=html||'<p>Нет блюд</p>'; }
+    window.removeMenu = function(i) { customMenu.splice(i,1); localStorage.setItem('customMenu',JSON.stringify(customMenu)); renderMenuList(); };
+    window.genProgram = function() { document.getElementById('genResult').innerHTML = '<p>Программа для ' + document.getElementById('progLevel').value + ' на ' + document.getElementById('progDays').value + ' дня</p>'; };
+
+    renderFolders();
+    document.getElementById('userLevel').textContent = Math.floor(workoutCount / 5) + 1;
+</script>
+</body>
+</html>
